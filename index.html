@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mobile App</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mobile App">
+    <meta name="theme-color" content="#6366f1">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+</head>
+<body>
+    <div class="app">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span class="time" id="time"></span>
+            </div>
+            <div class="status-right">
+                <div class="battery">
+                    <div class="battery-level"></div>
+                </div>
+                <div class="signal"></div>
+            </div>
+        </div>
+
+        <!-- App Header -->
+        <header class="app-header">
+            <h1>📱 Mobile App</h1>
+            <div class="header-actions">
+                <button class="install-btn" id="installBtn" style="display: none;">
+                    Install App
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="welcome-card">
+                <h2>Welcome to Your Mobile App!</h2>
+                <p>This is a Progressive Web App that works great on mobile devices.</p>
+            </div>
+
+            <!-- Counter Section -->
+            <div class="counter-section">
+                <h3>Counter Demo</h3>
+                <div class="counter-display" id="counter">0</div>
+                <div class="counter-controls">
+                    <button class="btn btn-secondary" onclick="decrementCounter()">-</button>
+                    <button class="btn btn-primary" onclick="incrementCounter()">+</button>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card" onclick="vibrate()">
+                    <div class="feature-icon">📳</div>
+                    <h4>Vibrate</h4>
+                    <p>Test device vibration</p>
+                </div>
+                
+                <div class="feature-card" onclick="getLocation()">
+                    <div class="feature-icon">📍</div>
+                    <h4>Location</h4>
+                    <p>Get your position</p>
+                </div>
+                
+                <div class="feature-card" onclick="toggleFullscreen()">
+                    <div class="feature-icon">🔳</div>
+                    <h4>Fullscreen</h4>
+                    <p>Toggle fullscreen mode</p>
+                </div>
+                
+                <div class="feature-card" onclick="shareApp()">
+                    <div class="feature-icon">🔗</div>
+                    <h4>Share</h4>
+                    <p>Share this app</p>
+                </div>
+            </div>
+
+            <!-- Status Display -->
+            <div class="status-display" id="statusDisplay">
+                Ready to use mobile features!
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('features')">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">Features</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('settings')">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Settings</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
