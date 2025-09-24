@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Mobile App</title>
+    <title>Gluten Free Gecko SEA</title>
     
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Mobile App">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-title" content="Gluten Free Gecko SEA">
+    <meta name="theme-color" content="#388e3c">
     
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -37,7 +37,7 @@
 
         <!-- App Header -->
         <header class="app-header">
-            <h1>📱 Mobile App</h1>
+            <h1>🦎 Gluten Free Gecko SEA</h1>
             <div class="header-actions">
                 <button class="install-btn" id="installBtn" style="display: none;">
                     Install App
@@ -46,68 +46,93 @@
         </header>
 
         <!-- Main Content -->
-        <main class="main-content">
-            <div class="welcome-card">
-                <h2>Welcome to Your Mobile App!</h2>
-                <p>This is a Progressive Web App that works great on mobile devices.</p>
-            </div>
-
-            <!-- Counter Section -->
-            <div class="counter-section">
-                <h3>Counter Demo</h3>
-                <div class="counter-display" id="counter">0</div>
-                <div class="counter-controls">
-                    <button class="btn btn-secondary" onclick="decrementCounter()">-</button>
-                    <button class="btn btn-primary" onclick="incrementCounter()">+</button>
+        <main class="main-content" id="mainContent">
+            <!-- Restaurant List Page -->
+            <div class="page" id="restaurantsPage">
+                <div class="page-content">
+                    <div class="restaurant-card" data-restaurant="pho99">
+                        <h3>Pho 99</h3>
+                        <p class="votes">12 votes</p>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="nasi-padang">
+                        <h3>Nasi Padang Sederhana</h3>
+                        <p class="votes">8 votes</p>
+                    </div>
+                    <div class="restaurant-card" data-restaurant="green-safe">
+                        <h3>Green & Safe</h3>
+                        <p class="votes">15 votes</p>
+                    </div>
+                    <div class="restaurant-card locked" data-restaurant="street-food">
+                        <h3>Street Food (Wisma Atria)</h3>
+                        <p class="votes">5 votes (Unlimited only)</p>
+                        <div class="lock-icon">🔒</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Features Grid -->
-            <div class="features-grid">
-                <div class="feature-card" onclick="vibrate()">
-                    <div class="feature-icon">📳</div>
-                    <h4>Vibrate</h4>
-                    <p>Test device vibration</p>
-                </div>
-                
-                <div class="feature-card" onclick="getLocation()">
-                    <div class="feature-icon">📍</div>
-                    <h4>Location</h4>
-                    <p>Get your position</p>
-                </div>
-                
-                <div class="feature-card" onclick="toggleFullscreen()">
-                    <div class="feature-icon">🔳</div>
-                    <h4>Fullscreen</h4>
-                    <p>Toggle fullscreen mode</p>
-                </div>
-                
-                <div class="feature-card" onclick="shareApp()">
-                    <div class="feature-icon">🔗</div>
-                    <h4>Share</h4>
-                    <p>Share this app</p>
+            <!-- Profile Page -->
+            <div class="page hidden" id="profilePage">
+                <div class="profile-content">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            🦎
+                        </div>
+                    </div>
+                    <h2 class="profile-name">FatBloke from New Zealand</h2>
+                    <p class="reputation">Reputation: <span id="reputationPoints">120</span> points</p>
                 </div>
             </div>
 
-            <!-- Status Display -->
-            <div class="status-display" id="statusDisplay">
-                Ready to use mobile features!
+            <!-- Paywall Page -->
+            <div class="page hidden" id="paywallPage">
+                <div class="paywall-content">
+                    <div class="plan-card free-plan">
+                        <h3>Free (always)</h3>
+                        <div class="plan-features">
+                            <div class="feature included">✔ Search restaurants</div>
+                            <div class="feature included">✔ Community reviews & votes</div>
+                            <div class="feature excluded">✘ Food stalls locked</div>
+                            <div class="feature excluded">✘ Custom gecko</div>
+                            <div class="feature excluded">✘ Ad-free</div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-card unlimited-monthly">
+                        <h3>Gecko Unlimited – $1 / month</h3>
+                        <div class="plan-features">
+                            <div class="feature included">✔ Unlock food stalls</div>
+                            <div class="feature included">✔ Customize your gecko</div>
+                            <div class="feature included">✔ Exclusive food deals</div>
+                            <div class="feature included">✔ Ad-free experience</div>
+                        </div>
+                        <button class="subscribe-btn" onclick="subscribe('monthly')">Subscribe Monthly</button>
+                    </div>
+                    
+                    <div class="plan-card unlimited-lifetime">
+                        <h3>Gecko Unlimited – $9.99 Lifetime</h3>
+                        <div class="plan-features">
+                            <div class="feature included">✔ Everything in monthly plan</div>
+                            <div class="feature included">✔ No renewals, no hassle</div>
+                        </div>
+                        <button class="subscribe-btn lifetime" onclick="subscribe('lifetime')">Buy Lifetime</button>
+                    </div>
+                </div>
             </div>
         </main>
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
-            <button class="nav-item active" onclick="switchTab('home')">
-                <span class="nav-icon">🏠</span>
-                <span class="nav-label">Home</span>
+            <button class="nav-item active" onclick="switchTab('restaurants')">
+                <span class="nav-icon">🍴</span>
+                <span class="nav-label">Restaurants</span>
             </button>
-            <button class="nav-item" onclick="switchTab('features')">
-                <span class="nav-icon">⚡</span>
-                <span class="nav-label">Features</span>
+            <button class="nav-item" onclick="switchTab('profile')">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
             </button>
-            <button class="nav-item" onclick="switchTab('settings')">
-                <span class="nav-icon">⚙️</span>
-                <span class="nav-label">Settings</span>
+            <button class="nav-item" onclick="switchTab('unlimited')">
+                <span class="nav-icon">⭐</span>
+                <span class="nav-label">Unlimited</span>
             </button>
         </nav>
     </div>

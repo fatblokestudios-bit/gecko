@@ -1,11 +1,16 @@
 // App State
-let counter = 0;
+let currentTab = 'restaurants';
+let userSubscription = localStorage.getItem('geckoSubscription') || 'free';
+let reputationPoints = parseInt(localStorage.getItem('reputationPoints')) || 120;
 let deferredPrompt;
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
     updateTime();
     setInterval(updateTime, 1000);
+    
+    // Initialize app content
+    initializeApp();
     
     // Register Service Worker
     if ('serviceWorker' in navigator) {
@@ -47,70 +52,108 @@ async function installApp() {
     }
 }
 
-// Counter Functions
-function incrementCounter() {
-    counter++;
-    updateCounter();
+// Navigation Functions
+function switchTab(tab) {
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Add active class to clicked item
+    event.target.closest('.nav-item').classList.add('active');
+    
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.add('hidden');
+    });
+    
+    // Show selected page
+    const pageMap = {
+        'restaurants': 'restaurantsPage',
+        'profile': 'profilePage', 
+        'unlimited': 'paywallPage'
+    };
+    
+    document.getElementById(pageMap[tab]).classList.remove('hidden');
+    currentTab = tab;
+    
     vibrate();
 }
 
-function decrementCounter() {
-    counter--;
-    updateCounter();
+// Subscription Functions
+function subscribe(plan) {
+    if (plan === 'monthly') {
+        userSubscription = 'unlimited';
+        updateStatus('🎉 Subscribed to Gecko Unlimited Monthly!');
+    } else if (plan === 'lifetime') {
+        userSubscription = 'lifetime';
+        updateStatus('🎉 Purchased Gecko Unlimited Lifetime!');
+    }
+    
+    localStorage.setItem('geckoSubscription', userSubscription);
+    updateRestaurantAccess();
     vibrate();
 }
 
-function updateCounter() {
-    document.getElementById('counter').textContent = counter;
+// Restaurant Access Control
+function updateRestaurantAccess() {
+    const streetFoodCard = document.querySelector('[data-restaurant="street-food"]');
+    
+    if (!streetFoodCard) return; // Guard against missing element
+    
+    if (userSubscription === 'unlimited' || userSubscription === 'lifetime') {
+        streetFoodCard.classList.remove('locked');
+        streetFoodCard.querySelector('.votes').textContent = '5 votes';
+        const lockIcon = streetFoodCard.querySelector('.lock-icon');
+        if (lockIcon) lockIcon.style.display = 'none';
+    } else {
+        streetFoodCard.classList.add('locked');
+        streetFoodCard.querySelector('.votes').textContent = '5 votes (Unlimited only)';
+        const lockIcon = streetFoodCard.querySelector('.lock-icon');
+        if (lockIcon) lockIcon.style.display = 'block';
+    }
+}
+
+// Restaurant Card Click Handler
+function handleRestaurantClick(event) {
+    const card = event.target.closest('.restaurant-card');
+    if (!card) return;
+    
+    if (card.classList.contains('locked')) {
+        updateStatus('🔒 Subscribe to Unlimited to access this restaurant!');
+        // Switch to paywall tab
+        switchTabProgrammatically('unlimited');
+    } else {
+        const name = card.querySelector('h3').textContent;
+        updateStatus(`🍴 Selected ${name}`);
+        
+        // Add reputation points for interaction
+        reputationPoints += 1;
+        localStorage.setItem('reputationPoints', reputationPoints);
+        document.getElementById('reputationPoints').textContent = reputationPoints;
+    }
+    vibrate();
+}
+
+function switchTabProgrammatically(tab) {
+    // Find the corresponding nav button and trigger click
+    const navButtons = document.querySelectorAll('.nav-item');
+    const tabMap = { 'restaurants': 0, 'profile': 1, 'unlimited': 2 };
+    navButtons[tabMap[tab]].click();
 }
 
 // Feature Functions
 function vibrate() {
     if ('vibrate' in navigator) {
         navigator.vibrate(50);
-        updateStatus('✨ Vibration activated!');
-    } else {
-        updateStatus('❌ Vibration not supported');
-    }
-}
-
-function getLocation() {
-    updateStatus('📍 Getting location...');
-    
-    if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                updateStatus(`📍 Location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-            },
-            (error) => {
-                updateStatus('❌ Location access denied');
-            }
-        );
-    } else {
-        updateStatus('❌ Geolocation not supported');
-    }
-}
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().then(() => {
-            updateStatus('🔳 Entered fullscreen mode');
-        }).catch(() => {
-            updateStatus('❌ Fullscreen not supported');
-        });
-    } else {
-        document.exitFullscreen().then(() => {
-            updateStatus('🔳 Exited fullscreen mode');
-        });
     }
 }
 
 function shareApp() {
     if (navigator.share) {
         navigator.share({
-            title: 'Mobile App',
-            text: 'Check out this awesome mobile web app!',
+            title: 'Gluten Free Gecko SEA',
+            text: 'Find the best gluten-free restaurants in Southeast Asia!',
             url: window.location.href
         }).then(() => {
             updateStatus('🔗 App shared successfully!');
@@ -127,30 +170,69 @@ function shareApp() {
     }
 }
 
-// Navigation
-function switchTab(tab) {
-    // Remove active class from all nav items
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
+// Initialize App Content
+function initializeApp() {
+    // Set up restaurant access based on subscription
+    updateRestaurantAccess();
+    
+    // Update reputation display
+    document.getElementById('reputationPoints').textContent = reputationPoints;
+    
+    // Add click handlers to restaurant cards
+    document.querySelectorAll('.restaurant-card').forEach(card => {
+        card.addEventListener('click', handleRestaurantClick);
     });
     
-    // Add active class to clicked item
-    event.target.closest('.nav-item').classList.add('active');
-    
-    // Update status
-    updateStatus(`📱 Switched to ${tab} tab`);
-    vibrate();
+    // Show subscription status
+    if (userSubscription !== 'free') {
+        updateStatus(`🎉 You have Gecko ${userSubscription === 'lifetime' ? 'Lifetime' : 'Unlimited'}!`);
+    } else {
+        updateStatus('🦎 Welcome to Gluten Free Gecko SEA!');
+    }
 }
 
 // Update Status Display
 function updateStatus(message) {
-    const statusDisplay = document.getElementById('statusDisplay');
-    statusDisplay.textContent = message;
-    statusDisplay.classList.add('loading');
+    // Create a temporary status message that appears at the bottom
+    const existingStatus = document.querySelector('.temp-status');
+    if (existingStatus) {
+        existingStatus.remove();
+    }
+    
+    const statusDiv = document.createElement('div');
+    statusDiv.className = 'temp-status';
+    statusDiv.textContent = message;
+    statusDiv.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        z-index: 1000;
+        font-size: 14px;
+        max-width: 300px;
+        text-align: center;
+        animation: slideUp 0.3s ease-out;
+    `;
+    
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(statusDiv);
     
     setTimeout(() => {
-        statusDisplay.classList.remove('loading');
-    }, 1000);
+        statusDiv.remove();
+    }, 3000);
 }
 
 // Touch and Gesture Handling

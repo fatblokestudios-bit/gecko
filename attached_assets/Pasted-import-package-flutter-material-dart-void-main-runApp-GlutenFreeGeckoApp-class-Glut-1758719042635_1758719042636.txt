@@ -1,0 +1,177 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(GlutenFreeGeckoApp());
+}
+
+class GlutenFreeGeckoApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Gluten Free Gecko SEA',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _pages = <Widget>[
+    RestaurantListPage(),
+    ProfilePage(),
+    PaywallPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Gluten Free Gecko SEA'),
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant),
+            label: 'Restaurants',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Unlimited',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green[800],
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class RestaurantListPage extends StatelessWidget {
+  final List<Map<String, String>> restaurants = [
+    {'name': 'Pho 99', 'votes': '12 votes'},
+    {'name': 'Nasi Padang Sederhana', 'votes': '8 votes'},
+    {'name': 'Green & Safe', 'votes': '15 votes'},
+    {'name': 'Street Food (Wisma Atria)', 'votes': '5 votes (Unlimited only)'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: restaurants.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Text(restaurants[index]['name']!),
+            subtitle: Text(restaurants[index]['votes']!),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  final String userName = "FatBloke";
+  final String userCountry = "New Zealand";
+  final int reputationPoints = 120;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.green[200],
+            child: Text(
+              "🦎",
+              style: TextStyle(fontSize: 40),
+            ),
+          ),
+          SizedBox(height: 20),
+          Text(
+            "$userName from $userCountry",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Text("Reputation: $reputationPoints points"),
+        ],
+      ),
+    );
+  }
+}
+
+class PaywallPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(16.0),
+      children: [
+        Card(
+          child: ListTile(
+            title: Text("Free (always)"),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Search restaurants"),
+                Text("✔ Community reviews & votes"),
+                Text("✘ Food stalls locked"),
+                Text("✘ Custom gecko"),
+                Text("✘ Ad-free"),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            title: Text("Gecko Unlimited – \$1 / month"),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Unlock food stalls"),
+                Text("✔ Customize your gecko"),
+                Text("✔ Exclusive food deals"),
+                Text("✔ Ad-free experience"),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            title: Text("Gecko Unlimited – \$9.99 Lifetime"),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Everything in monthly plan"),
+                Text("✔ No renewals, no hassle"),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
