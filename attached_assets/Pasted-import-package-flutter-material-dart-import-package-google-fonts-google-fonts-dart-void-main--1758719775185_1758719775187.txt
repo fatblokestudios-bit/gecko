@@ -1,0 +1,217 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+void main() {
+  runApp(GlutenFreeGeckoApp());
+}
+
+class GlutenFreeGeckoApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Gluten Free Gecko SEA',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        textTheme: GoogleFonts.poppinsTextTheme(),
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _pages = <Widget>[
+    RestaurantListPage(),
+    ProfilePage(),
+    PaywallPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4CAF50), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        title: Text("Gluten Free Gecko SEA",
+            style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant_menu), label: "Discover"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: "Unlimited"),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green[800],
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class RestaurantListPage extends StatelessWidget {
+  final List<Map<String, String>> restaurants = [
+    {'name': 'Pho 99', 'votes': '12 confirmed'},
+    {'name': 'Nasi Padang Sederhana', 'votes': '8 confirmed'},
+    {'name': 'Green & Safe', 'votes': '15 confirmed'},
+    {'name': 'Street Food (Wisma Atria)', 'votes': '5 confirmed'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.all(12),
+      itemCount: restaurants.length,
+      itemBuilder: (context, index) {
+        return Card(
+          elevation: 4,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          margin: EdgeInsets.symmetric(vertical: 8),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.green[100],
+              child: Icon(Icons.check, color: Colors.green[800]),
+            ),
+            title: Text(
+              restaurants[index]['name']!,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(restaurants[index]['votes']!),
+            trailing: Icon(Icons.arrow_forward_ios, size: 16),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  final String userName = "FatBloke";
+  final String userCountry = "New Zealand";
+  final int reputationPoints = 120;
+
+  @override
+  Widget build(BuildContext context) {
+    double levelProgress = reputationPoints / 200; // 200 pts = next level
+
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.green[200],
+            child: Text("🦎", style: TextStyle(fontSize: 40)),
+          ),
+          SizedBox(height: 20),
+          Text(
+            "$userName from $userCountry",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Text("Reputation: $reputationPoints points"),
+          SizedBox(height: 20),
+          LinearProgressIndicator(
+            value: levelProgress,
+            backgroundColor: Colors.grey[300],
+            color: Colors.green,
+            minHeight: 10,
+          ),
+          SizedBox(height: 10),
+          Text("Level Progress"),
+        ],
+      ),
+    );
+  }
+}
+
+class PaywallPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.all(16.0),
+      children: [
+        Card(
+          color: Colors.green[50],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)),
+          child: ListTile(
+            title: Text("Free (always)",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Search restaurants"),
+                Text("✔ Community reviews & votes"),
+                Text("✘ Food stalls locked"),
+                Text("✘ Custom gecko"),
+                Text("✘ Ad-free"),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          color: Colors.amber[50],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)),
+          child: ListTile(
+            title: Text("Gecko Unlimited – \$1 / month",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Unlock food stalls"),
+                Text("✔ Customize your gecko"),
+                Text("✔ Exclusive food deals"),
+                Text("✔ Ad-free experience"),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          color: Colors.lightBlue[50],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)),
+          child: ListTile(
+            title: Text("Gecko Unlimited – \$9.99 Lifetime",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("✔ Everything in monthly plan"),
+                Text("✔ No renewals, no hassle"),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

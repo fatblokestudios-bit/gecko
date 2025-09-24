@@ -14,6 +14,11 @@
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
     
@@ -51,21 +56,36 @@
             <div class="page" id="restaurantsPage">
                 <div class="page-content">
                     <div class="restaurant-card" data-restaurant="pho99">
-                        <h3>Pho 99</h3>
-                        <p class="votes">12 votes</p>
+                        <div class="restaurant-icon">✓</div>
+                        <div class="restaurant-content">
+                            <h3>Pho 99</h3>
+                            <p class="votes">12 confirmed</p>
+                        </div>
+                        <div class="arrow-icon">›</div>
                     </div>
                     <div class="restaurant-card" data-restaurant="nasi-padang">
-                        <h3>Nasi Padang Sederhana</h3>
-                        <p class="votes">8 votes</p>
+                        <div class="restaurant-icon">✓</div>
+                        <div class="restaurant-content">
+                            <h3>Nasi Padang Sederhana</h3>
+                            <p class="votes">8 confirmed</p>
+                        </div>
+                        <div class="arrow-icon">›</div>
                     </div>
                     <div class="restaurant-card" data-restaurant="green-safe">
-                        <h3>Green & Safe</h3>
-                        <p class="votes">15 votes</p>
+                        <div class="restaurant-icon">✓</div>
+                        <div class="restaurant-content">
+                            <h3>Green & Safe</h3>
+                            <p class="votes">15 confirmed</p>
+                        </div>
+                        <div class="arrow-icon">›</div>
                     </div>
-                    <div class="restaurant-card locked" data-restaurant="street-food">
-                        <h3>Street Food (Wisma Atria)</h3>
-                        <p class="votes">5 votes (Unlimited only)</p>
-                        <div class="lock-icon">🔒</div>
+                    <div class="restaurant-card" data-restaurant="street-food">
+                        <div class="restaurant-icon">✓</div>
+                        <div class="restaurant-content">
+                            <h3>Street Food (Wisma Atria)</h3>
+                            <p class="votes">5 confirmed</p>
+                        </div>
+                        <div class="arrow-icon">›</div>
                     </div>
                 </div>
             </div>
@@ -80,6 +100,12 @@
                     </div>
                     <h2 class="profile-name">FatBloke from New Zealand</h2>
                     <p class="reputation">Reputation: <span id="reputationPoints">120</span> points</p>
+                    <div class="level-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-label">Level Progress</p>
+                    </div>
                 </div>
             </div>
 
@@ -123,8 +149,8 @@
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="switchTab('restaurants')">
-                <span class="nav-icon">🍴</span>
-                <span class="nav-label">Restaurants</span>
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-label">Discover</span>
             </button>
             <button class="nav-item" onclick="switchTab('profile')">
                 <span class="nav-icon">👤</span>

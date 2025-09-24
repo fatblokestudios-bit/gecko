@@ -4,6 +4,15 @@ let userSubscription = localStorage.getItem('geckoSubscription') || 'free';
 let reputationPoints = parseInt(localStorage.getItem('reputationPoints')) || 120;
 let deferredPrompt;
 
+// Level progress calculation (200 points per level)
+function updateLevelProgress() {
+    const levelProgress = (reputationPoints % 200) / 200;
+    const progressFill = document.getElementById('progressFill');
+    if (progressFill) {
+        progressFill.style.width = (levelProgress * 100) + '%';
+    }
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
     updateTime();
@@ -85,33 +94,19 @@ function subscribe(plan) {
     if (plan === 'monthly') {
         userSubscription = 'unlimited';
         updateStatus('🎉 Subscribed to Gecko Unlimited Monthly!');
+        // Add bonus reputation points for subscribing
+        reputationPoints += 20;
     } else if (plan === 'lifetime') {
         userSubscription = 'lifetime';
         updateStatus('🎉 Purchased Gecko Unlimited Lifetime!');
+        // Add bonus reputation points for lifetime subscription
+        reputationPoints += 50;
     }
     
     localStorage.setItem('geckoSubscription', userSubscription);
-    updateRestaurantAccess();
+    localStorage.setItem('reputationPoints', reputationPoints);
+    updateReputationDisplay();
     vibrate();
-}
-
-// Restaurant Access Control
-function updateRestaurantAccess() {
-    const streetFoodCard = document.querySelector('[data-restaurant="street-food"]');
-    
-    if (!streetFoodCard) return; // Guard against missing element
-    
-    if (userSubscription === 'unlimited' || userSubscription === 'lifetime') {
-        streetFoodCard.classList.remove('locked');
-        streetFoodCard.querySelector('.votes').textContent = '5 votes';
-        const lockIcon = streetFoodCard.querySelector('.lock-icon');
-        if (lockIcon) lockIcon.style.display = 'none';
-    } else {
-        streetFoodCard.classList.add('locked');
-        streetFoodCard.querySelector('.votes').textContent = '5 votes (Unlimited only)';
-        const lockIcon = streetFoodCard.querySelector('.lock-icon');
-        if (lockIcon) lockIcon.style.display = 'block';
-    }
 }
 
 // Restaurant Card Click Handler
@@ -119,20 +114,20 @@ function handleRestaurantClick(event) {
     const card = event.target.closest('.restaurant-card');
     if (!card) return;
     
-    if (card.classList.contains('locked')) {
-        updateStatus('🔒 Subscribe to Unlimited to access this restaurant!');
-        // Switch to paywall tab
-        switchTabProgrammatically('unlimited');
-    } else {
-        const name = card.querySelector('h3').textContent;
-        updateStatus(`🍴 Selected ${name}`);
-        
-        // Add reputation points for interaction
-        reputationPoints += 1;
-        localStorage.setItem('reputationPoints', reputationPoints);
-        document.getElementById('reputationPoints').textContent = reputationPoints;
-    }
+    const name = card.querySelector('h3').textContent;
+    updateStatus(`🍴 Selected ${name}`);
+    
+    // Add reputation points for interaction
+    reputationPoints += 1;
+    localStorage.setItem('reputationPoints', reputationPoints);
+    updateReputationDisplay();
     vibrate();
+}
+
+// Update reputation display and progress bar
+function updateReputationDisplay() {
+    document.getElementById('reputationPoints').textContent = reputationPoints;
+    updateLevelProgress();
 }
 
 function switchTabProgrammatically(tab) {
@@ -172,11 +167,8 @@ function shareApp() {
 
 // Initialize App Content
 function initializeApp() {
-    // Set up restaurant access based on subscription
-    updateRestaurantAccess();
-    
-    // Update reputation display
-    document.getElementById('reputationPoints').textContent = reputationPoints;
+    // Update reputation display and progress bar
+    updateReputationDisplay();
     
     // Add click handlers to restaurant cards
     document.querySelectorAll('.restaurant-card').forEach(card => {
