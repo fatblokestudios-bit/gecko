@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class RestaurantsPage extends StatelessWidget {
+  final Function(String) onRestaurantTap;
+
+  const RestaurantsPage({Key? key, required this.onRestaurantTap}) : super(key: key);
+
   final List<Restaurant> restaurants = [
     Restaurant(name: 'Pho 99', votes: 12),
     Restaurant(name: 'Nasi Padang Sederhana', votes: 8),
@@ -66,12 +70,7 @@ class RestaurantsPage extends StatelessWidget {
                 size: 16,
               ),
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Opening ${restaurant.name}...'),
-                    duration: Duration(seconds: 1),
-                  ),
-                );
+                onRestaurantTap(restaurant.name);
               },
             ),
           );
@@ -85,5 +84,5 @@ class Restaurant {
   final String name;
   final int votes;
 
-  Restaurant({required this.name, required this.votes});
+  const Restaurant({required this.name, required this.votes});
 }

@@ -63,15 +63,47 @@ class _MainScreenState extends State<MainScreen> {
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          RestaurantsPage(),
+          RestaurantsPage(
+            onRestaurantTap: (restaurantName) {
+              setState(() {
+                reputationPoints += 1; // Award 1 point per restaurant visit
+              });
+              _saveUserData();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Visited $restaurantName! +1 reputation point'),
+                  backgroundColor: Color(0xFF4CAF50),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
           ProfilePage(reputationPoints: reputationPoints),
           PaywallPage(
             currentSubscription: userSubscription,
             onSubscriptionChange: (subscription) {
               setState(() {
                 userSubscription = subscription;
+                // Award bonus points for subscription
+                if (subscription == 'monthly') {
+                  reputationPoints += 20; // Monthly bonus
+                } else if (subscription == 'lifetime') {
+                  reputationPoints += 50; // Lifetime bonus
+                }
               });
               _saveUserData();
+              
+              // Show success message with bonus points
+              int bonusPoints = subscription == 'monthly' ? 20 : (subscription == 'lifetime' ? 50 : 0);
+              if (bonusPoints > 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Subscribed to ${subscription} plan! +$bonusPoints bonus points'),
+                    backgroundColor: Color(0xFF4CAF50),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
             },
           ),
         ],
